@@ -13,7 +13,7 @@ In the script you will demonstrate code to get access to storage account with us
 1. Use following commands to update firewall settings in Azure Storage Account.
 
 ```CMD
-az storage account update  --name "<your account name>" --default-action Deny
+az storage account update  --name "az204egsubdemo" --default-action Deny
 ```
 
 1. Run the code and demonstrate it CANNOT access to storage account.
@@ -21,6 +21,6 @@ az storage account update  --name "<your account name>" --default-action Deny
 1. Run following command to enable access and run the code again
 
 ```CMD
-az storage account update  --name "<your account name>" --default-action Allow
+az storage account update  --name "az204egsubdemo" --default-action Allow
 ```
 1. Now the you should get access from first attempt.

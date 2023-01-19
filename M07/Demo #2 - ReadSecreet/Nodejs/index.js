@@ -1,12 +1,15 @@
-var http = require('http');
-const dotenv = require('dotenv');
-const path = require('path');
+var http = require("http");
+const dotenv = require("dotenv");
+const path = require("path");
 
-const {DefaultAzureCredential, ManagedIdentityCredential} = require('@azure/identity');
-const {SecretClient} = require('@azure/keyvault-secrets');
+const {
+  DefaultAzureCredential,
+  ManagedIdentityCredential,
+} = require("@azure/identity");
+const { SecretClient } = require("@azure/keyvault-secrets");
 
 // Import required configuration.
-const ENV_FILE = path.join(__dirname, '.env');
+const ENV_FILE = path.join(__dirname, `.env.${process.env.NODE_ENV}`);
 dotenv.config({ path: ENV_FILE });
 
 // // DefaultAzureCredential expects the following three environment variables:
@@ -21,32 +24,28 @@ const credential = new DefaultAzureCredential();
 // Replace value with your Key Vault name here
 const vaultName = process.env.KeyVaultName;
 const url = `https://${vaultName}.vault.azure.net`;
-  
+
 const client = new SecretClient(url, credential);
 
 // Replace value with your secret name here
 
-
-var server = http.createServer(function(request, response) {
-    response.writeHead(200, {"Content-Type": "text/plain"});
-    async function main(){
-        // Get the secret we created
-        const secret = await client.getSecret(process.env.secretName);
-        response.write(`Your secret value is: ${secret.value}`);
-        response.end();
-    }
-    main().catch((err) => {
-        response.write(`error code: ${err.code}`);
-        response.write(`error message: ${err.message}`);
-        response.write(`error stack: ${err.stack}`);
-        response.end();
-    });
+var server = http.createServer(function (request, response) {
+  response.writeHead(200, { "Content-Type": "text/plain" });
+  async function main() {
+    // Get the secret we created
+    const secret = await client.getSecret(process.env.secretName);
+    response.write(`Your secret value is: ${secret.value}`);
+    response.end();
+  }
+  main().catch((err) => {
+    response.write(`error code: ${err.code}`);
+    response.write(`error message: ${err.message}`);
+    response.write(`error stack: ${err.stack}`);
+    response.end();
+  });
 });
 
 var port = process.env.PORT || 1337;
 server.listen(port);
 
 console.log("Server running at http://localhost:%d", port);
-
-
-

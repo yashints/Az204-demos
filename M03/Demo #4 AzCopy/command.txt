@@ -1,7 +1,7 @@
 Upload files  
 
-AzCopy copy img "https://YOURNAME.blob.core.windows.net/azcopyimg?sv=2019-02-02&ss=b&srt=co&sp=rwdlac&se=2025-11-01T04:50:06Z&st=2019-10-31T20:50:06Z&spr=https&sig=YOURSAS" --recursive=true
+AzCopy copy img "https://sa204demo.blob.core.windows.net/azcopyimg?sp=r&st=2021-08-30T21:56:49Z&se=2021-08-31T05:56:49Z&spr=https&sv=2020-08-04&sr=c&sig=95gjJJHfnEj%2BN%2Fab9aceE9BZGLoF7wgJuH4MHU4kEyA%3D" --recursive=true
 
 Download files
 
-AzCopy copy "https://YOURNAME.blob.core.windows.net/azcopyimg?sv=2019-02-02&ss=b&srt=co&sp=rwdlac&se=2025-11-01T04:50:06Z&st=2019-10-31T20:50:06Z&spr=https&sig=YOURSAS" img_new --recursive=true
+AzCopy copy "https://sa204demo.blob.core.windows.net/azcopyimg?sp=r&st=2021-08-30T21:56:49Z&se=2021-08-31T05:56:49Z&spr=https&sv=2020-08-04&sr=c&sig=95gjJJHfnEj%2BN%2Fab9aceE9BZGLoF7wgJuH4MHU4kEyA%3D" img_new --recursive=true

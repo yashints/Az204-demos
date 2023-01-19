@@ -1,0 +1,15 @@
+webappname=mywebapp$RANDOM
+location=australiaeast
+rg=AZ204
+
+az group create --location $location --name $rg
+
+mkdir quickstart
+cd $HOME/quickstart
+
+git clone https://github.com/Azure-Samples/html-docs-hello-world.git
+
+cd html-docs-hello-world
+
+az webapp up --location $location --resource-group $rg --name $webappname --html
+

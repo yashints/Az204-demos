@@ -1,5 +1,11 @@
-az group create --name "Demo5" --location "eastus"
+$location = 'australiaeast'
+$rgName = 'AZ204'
 
-az group deployment create --name "newdeployment" --resource-group "Demo5" --template-file "template.json" --parameters "parameters.json"
+az group create --name $rgName --location $location
 
-az storage account show --resource-group "Demo5" --name "alextnewtempltest1"
+az deployment group create `
+  --resource-group $rgName `
+  --template-file "template.json" `
+  --parameters "parameters.json"
+
+az storage account show --resource-group $rgName --name "az204armstorage21"

@@ -1,0 +1,5 @@
+az group create -n rg-aca -l northeurope
+
+az deployment group create -n aca-deploy `
+  -g rg-aca `
+  --template-file ./main.bicep

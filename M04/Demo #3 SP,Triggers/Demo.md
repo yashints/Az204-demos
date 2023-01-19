@@ -17,11 +17,11 @@ In the demonstration you will find out how to use user define functions, stored 
 3. Run following query to demonstrate UDF and find the launch pad 39A/B:
 
 ```sql
-SELECT m.id,m[&quot;Start of mission&quot;][&quot;Launch site&quot;]
+SELECT m.id,m['Start of mission']['Launch site']
 
 FROM Missions m
 
-WHERE udf.Match(m[&quot;Start of mission&quot;][&quot;Launch site&quot;],&quot;39[AB]&quot;)
+WHERE udf.Match(m['Start of mission']['Launch site'],'39[AB]')
 ```
 
 1. Run stored proc to demonstrate result (/Operator – partition name

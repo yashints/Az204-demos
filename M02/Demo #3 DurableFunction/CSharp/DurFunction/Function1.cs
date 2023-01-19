@@ -6,45 +6,47 @@ using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
+using System.Threading;
 
 namespace DurFunction
 {
-    public static class Functions
+  public static class Functions
+  {
+    [FunctionName("GetCities")]
+    public static async Task<List<string>> RunOrchestrator(
+        [OrchestrationTrigger] IDurableOrchestrationContext context)
     {
-        [FunctionName("GetCities")]
-        public static async Task<List<string>> RunOrchestrator(
-            [OrchestrationTrigger] IDurableOrchestrationContext context)
-        {
-            var outputs = new List<string>();
+      var outputs = new List<string>();
 
-            // Replace "hello" with the name of your Durable Activity Function.
-            outputs.Add(await context.CallActivityAsync<string>("ProcessCity", "Tokyo"));
-            outputs.Add(await context.CallActivityAsync<string>("ProcessCity", "Seattle"));
-            outputs.Add(await context.CallActivityAsync<string>("ProcessCity", "London"));
+      // Replace "hello" with the name of your Durable Activity Function.
+      outputs.Add(await context.CallActivityAsync<string>("ProcessCity", "Tokyo"));
+      outputs.Add(await context.CallActivityAsync<string>("ProcessCity", "Seattle"));
+      outputs.Add(await context.CallActivityAsync<string>("ProcessCity", "London"));
 
-            // returns ["Hello Tokyo!", "Hello Seattle!", "Hello London!"]
-            return outputs;
-        }
-
-        [FunctionName("ProcessCity")]
-        public static string SayHello([ActivityTrigger] string name, ILogger log)
-        {
-            log.LogInformation($"Saying hello to {name}");
-            return $"Hello {name}!";
-        }
-
-        [FunctionName("HttpStart")]
-        public static async Task<HttpResponseMessage> HttpStart(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestMessage req,
-            [DurableClient] IDurableOrchestrationClient starter,
-            ILogger log)
-        {
-            // Function input comes from the request content.
-            string instanceId = await starter.StartNewAsync("GetCities", null);
-
-            log.LogInformation($"Started orchestration with ID = '{instanceId}'.");
-
-            return starter.CreateCheckStatusResponse(req, instanceId);
-        }
+      // returns ["Hello Tokyo!", "Hello Seattle!", "Hello London!"]
+      return outputs;
     }
+
+    [FunctionName("ProcessCity")]
+    public static string SayHello([ActivityTrigger] string name, ILogger log)
+    {
+      log.LogInformation($"Saying hello to {name}");
+      Thread.Sleep(10000);
+      return $"Hello from {name}!";
+    }
+
+    [FunctionName("HttpStart")]
+    public static async Task<HttpResponseMessage> HttpStart(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestMessage req,
+        [DurableClient] IDurableOrchestrationClient starter,
+        ILogger log)
+    {
+      // Function input comes from the request content.
+      string instanceId = await starter.StartNewAsync("GetCities", null);
+
+      log.LogInformation($"Started orchestration with ID = '{instanceId}'.");
+
+      return starter.CreateCheckStatusResponse(req, instanceId);
+    }
+  }
 }

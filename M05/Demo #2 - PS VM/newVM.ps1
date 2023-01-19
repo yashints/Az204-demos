@@ -1,19 +1,20 @@
-#Connect-AzAccount
+$location = 'australiaeast'
+$rgName = 'AZ204'
 
-New-AzResourceGroup -Name Demo2 -Location EastUS
+#New-AzResourceGroup -Name $rgName -Location $location
 
 New-AzVm `
-    -ResourceGroupName "Demo2" `
+    -ResourceGroupName $rgName `
     -Name "myVM" `
-    -Location "East US" `
+    -Location $location `
     -VirtualNetworkName "myVnet" `
     -SubnetName "mySubnet" `
     -SecurityGroupName "myNetworkSecurityGroup" `
     -PublicIpAddressName "myPublicIpAddress" `
     -OpenPorts 80,3389
 
-$ip = Get-AzPublicIpAddress -ResourceGroupName "Demo2" | Select "IpAddress“
+$ip = Get-AzPublicIpAddress -ResourceGroupName $rgName | Select "IpAddress"
 
 mstsc /v:($ip.IpAddress)
 
-#Install-WindowsFeature -name Web-Server –IncludeManagementTools
+#Install-WindowsFeature -name Web-Server IncludeManagementTools

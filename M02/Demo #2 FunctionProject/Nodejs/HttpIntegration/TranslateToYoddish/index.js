@@ -1,3 +1,4 @@
+
 const rq = require('request-promise');
 
 module.exports = function (context, req) {

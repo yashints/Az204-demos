@@ -1,19 +1,24 @@
 #create resource group
-az group create --name TheKeyVaultDemo --location eastus2
+$rgName = "AZ204"
+# $keyVaultName = "kvdemo$(Get-Random)"
+$keyVaultName="az204kvdemo23"
+$location = "eastus"
+
+az group create --name $rgName --location $location
 
 #create key vault
-az keyvault create --name keyVaultDemo-alex --resource-group TheKeyVaultDemo --location eastus2
+az keyvault create --name $keyVaultName --resource-group $rgName --location $location
 
 #set secret
-az keyvault secret set --vault-name keyVaultDemo-alex --name topsecret --value "Hello World"
+az keyvault secret set --vault-name $keyVaultName --name topsecret --value "Hello World Three"
 
 #retrive secret
-az keyvault secret show --name "topsecret" --vault-name "keyVaultDemo-alex"
+az keyvault secret show --name "topsecret" --vault-name $keyVaultName 
 
-$appID="<your application ID>"
+$appID = (az ad app list --filter "displayname eq 'Yas App Registration Demo'" --query "[0].appId")
 
 #assign permision
-az keyvault set-policy --name "keyVaultDemo-alex" --spn $appID --secret-permissions get list set
+az keyvault set-policy --name $keyVaultName  --spn $appID --secret-permissions get list set
 
 #clean up
-az group delete --name TheKeyVaultDemo
+az group delete --name $rgName

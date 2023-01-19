@@ -1,5 +1,5 @@
 # Pull existing Docker image from docker hub
-docker pull microsoft/aci-helloworld   
+docker pull microsoft/aci-helloworld
 docker pull wernight/funbox            
 
 #run simple web site locally

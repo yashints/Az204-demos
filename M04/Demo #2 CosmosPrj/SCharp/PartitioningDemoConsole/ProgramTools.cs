@@ -44,10 +44,12 @@ namespace PartitioningDemoConsole
             DocumentCollection collectionDefinition = new DocumentCollection { Id = collectionId };
             if (wihtPartition) collectionDefinition.PartitionKey.Paths.Add("/StartLetter");
 
+            //_collection = await client.CreateDocumentCollectionAsync(_database.SelfLink,
+            //    collectionDefinition, new RequestOptions { OfferThroughput = 400 });
             _collection = await client.CreateDocumentCollectionAsync(_database.SelfLink,
-                collectionDefinition, new RequestOptions { OfferThroughput = 400 });
+                collectionDefinition);
 
-                foreach (var part in partitions)
+            foreach (var part in partitions)
                     RunBulkImport(client, _collection.SelfLink, wihtPartition ? part : null, part, @".\Data\" + part).Wait();
 
         }

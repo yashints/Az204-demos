@@ -1,24 +1,33 @@
 #Create resource group
-az group create --name ACR-Demo --location eastus
+#$acrName = "acr$(Random(1000))"
+$acrName = "az204acrdemo"
+$location = 'eastus'
+$rgName = 'AZ204'
+
+az group create --name $rgName --location $location
 
 # Create an ACR instance
-az acr create --resource-group ACR-Demo --name alexacrdemo --sku Basic
+az acr create --resource-group $rgName --name $acrName --sku Basic
 
 # Login to ACR
-az acr login --name alexacrdemo 
+az acr login --name $acrName 
+
+az acr update --name $acrName --admin-enabled true
 
 # Obtain the full login server name of the ACR instance
-az acr list --resource-group ACR-Demo --query "[].{acrLoginServer:loginServer}" --output table
+az acr list --resource-group $rgName --query "[].{acrLoginServer:loginServer}" --output table
 
 # Tag image with full login server name prefix
-docker tag ninjacat-nodejs alexacrdemo.azurecr.io/ninjacat-nodejs:v1
+docker tag ninjacat "$acrName.azurecr.io/ninjacat"
 
 # Push image to ACR
-docker push alexacrdemo.azurecr.io/ninjacat-nodejs:v1
+docker push "$acrName.azurecr.io/ninjacat"
+
+az acr build --image "$acrName.azurecr.io/ninjacat" --registry $acrName "../Demo `#6 - Docker Img/Nodejs"
 
 # List container images
-az acr repository list --name alexacrdemo --output table
+az acr repository list --name $acrName --output table
 
 # List the tags on the aci-helloworld repository
-az acr repository show-tags --name alexacrdemo --repository ninjacat-nodejs --output table
+az acr repository show-tags --name $acrName --repository ninjacat-nodejs --output table
 

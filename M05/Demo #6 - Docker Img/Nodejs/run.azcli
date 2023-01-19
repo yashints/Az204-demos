@@ -1,8 +1,8 @@
 # build image 
-docker build -t ninjacat-nodejs .
+docker build -t ninjacat .
 
 # run image locally
-docker run -p 49160:9090 -d ninjacat-nodejs
+docker run -p 8080:80 -d ninjacat
 
 # visit http://localhost:49160/
 

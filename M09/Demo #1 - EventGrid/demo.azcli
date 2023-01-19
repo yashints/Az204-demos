@@ -1,22 +1,38 @@
 
 $groupname= "EventGridSubscriptionDemo"  #monitoring Group
-$subid= "<your subscription id>"   
-$storaccountname = "eventgridsubsdemo"  #queue acc
+$subid= "349202f9-9921-4db9-97d0-2c764fec3bcd"   
+$storaccountname = "az204egsubdemo"  #queue acc
 $queuename = "event-test"               #queue name
+$rgName = "EventGridSubDemo"
+$location = "eastus"
 
 # creates a resource group named gridResourceGroup in the westus2 location
-az group create --name "Demo9" --location "eastus"
+az group create --name $rgName --location $location
+
+az group create --name $groupname --location $location
 
 # register the provider and check the status
 az provider register --namespace Microsoft.EventGrid
 az provider show --namespace Microsoft.EventGrid --query "registrationState"
 
 # create the custom topic
-az eventgrid topic create --name demotopicname -l eastus -g "Demo9"
+# az eventgrid topic create --name "evgrid$(Get-Random(10000))" -l $location -g $rgName
+
+# create storage account
+
+az storage account create -n $storaccountname -g $rgName -l $location --sku Standard_LRS
+
+# create queue
+
+az storage queue create --name $queuename --account-name $storaccountname
 
 # create custom subscription
-az eventgrid event-subscription create --name demoViewerSub --source-resource-id "/subscriptions/$subid/resourceGroups/$groupname" --endpoint-type storagequeue --endpoint "/subscriptions/$subid/resourceGroups/$groupname/providers/Microsoft.Storage/storageAccounts/$storaccountname/queueServices/default/queues/$queuename"
+az eventgrid event-subscription create `
+  --name demoViewerSub `
+  --source-resource-id "/subscriptions/$subid/resourceGroups/$groupname" `
+  --endpoint-type storagequeue `
+  --endpoint "/subscriptions/$subid/resourceGroups/$rgName/providers/Microsoft.Storage/storageAccounts/$storaccountname/queueServices/default/queues/$queuename"
 
 #show existed subscription
-az eventgrid event-subscription list  --source-resource-id "/subscriptions/$subid/resourceGroups/$groupname"
+az eventgrid event-subscription list --source-resource-id "/subscriptions/$subid/resourceGroups/$groupname" -o table
 

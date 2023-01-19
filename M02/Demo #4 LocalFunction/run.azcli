@@ -1,0 +1,13 @@
+func init MyFunctionProj
+
+cd MyFunctionProj
+
+func new
+
+func new --template "Http Trigger" --name MyHttpTrigger
+
+func new --template "Queue Trigger" --name MyQueueTrigger
+
+func start
+
+curl --get http://localhost:7071/api/MyHttpTrigger?name=Azure%20Rocks

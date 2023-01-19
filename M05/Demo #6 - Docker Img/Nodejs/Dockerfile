@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:current-alpine
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -15,5 +15,5 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-EXPOSE 9090
+EXPOSE 80
 CMD [ "node", "server.js" ]

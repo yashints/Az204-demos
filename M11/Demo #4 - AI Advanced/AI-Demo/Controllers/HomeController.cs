@@ -13,7 +13,7 @@ namespace AI_Demo.Controllers
 {
     public class HomeController : Controller
     {
-        static TelemetryClient telemetryClient = new TelemetryClient() { InstrumentationKey = "e52566ba-42d2-462a-903c-c28a503e8316" };
+        static TelemetryClient telemetryClient = new TelemetryClient() { InstrumentationKey = "a53877d5-95ba-4968-b78d-94bdc48f4db2" };
         private BlobRepository blobRepository;
 
         public object BlobRepository { get; private set; }

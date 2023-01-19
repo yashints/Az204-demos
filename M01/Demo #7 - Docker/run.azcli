@@ -1,0 +1,45 @@
+$rgName = "AZ204"
+$location = "australiaeast"
+$acrName = "acr$(Random(1000))"
+$planName = "ASP$(Random(1000))"
+$webAppName = "webdocker$(Random(1000))"
+
+# Creating the resource group
+az group create --name $rgName --location $location
+
+# Creating the container registry
+az acr create --name $acrName `
+  --resource-group $rgName `
+  --location $location `
+  --sku Standard `
+  --admin-enabled $true 
+
+$pass = $(az acr credential show -n $acrName --query 'passwords[0].value')
+
+# Building and pushing the image to our ACR
+az acr build --registry $acrName --image helloacr:latest . 
+
+# Deploy a container instance from the previous image
+az container create `
+    --resource-group $rgName `
+    --name "aci$(Random(1000))" `
+    --location $location `
+    --image "$acrName.azurecr.io/helloacr" `
+    --registry-login-server "$acrName.azurecr.io" `
+    --registry-username $acrName `
+    --registry-password $pass `
+    --dns-name-label commbankdemoaci `
+    --query "{FQDN:ipAddress.fqdn}" `
+    --ports 8080 `
+    --output table
+
+# create web app with the container
+az appservice plan create -g $rgName `
+  -n $planName --sku S1 `
+  --is-linux 
+
+az webapp create -g $rgName `
+  -p $planName -n $webAppName `
+  -i "$acrName.azurecr.io/helloacr" `
+  -s $acrName `
+  -w $pass

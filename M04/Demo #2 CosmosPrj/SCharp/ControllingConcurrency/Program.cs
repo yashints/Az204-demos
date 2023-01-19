@@ -64,7 +64,7 @@ namespace ControllingConcurrency
                             where f.Id == addCustomer.Id
                             select f).AsEnumerable().FirstOrDefault();
 
-            Console.WriteLine("Customer Doc has loaded from DB");
+            Console.WriteLine($"Customer Doc has loaded from DB with eTag {document.ETag}");
 
             // Cast the Document to our Customer & make a data change
             var editCustomer = (Customer)(dynamic)document;
@@ -80,7 +80,11 @@ namespace ControllingConcurrency
             await _dbSetup.Client.ReplaceDocumentAsync(document.SelfLink, editCustomer,
                 new RequestOptions { AccessCondition = ac });
 
-            Console.WriteLine("Customer Doc has been modified in DB");
+          var updatedDocument = (from f in _dbSetup.Client.CreateDocumentQuery(_dbSetup.Collection.SelfLink)
+                      where f.Id == addCustomer.Id
+                      select f).AsEnumerable().FirstOrDefault();
+
+            Console.WriteLine($"Customer Doc has been modified in DB with the new eTag: {updatedDocument.ETag}");
 
             try
             {

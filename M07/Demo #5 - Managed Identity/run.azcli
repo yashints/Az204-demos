@@ -1,0 +1,42 @@
+$rgName = "rg$(RANDOM(100))"
+$storageName = "stg$(RANDOM(100))"
+$appPlanName = "ASP"
+$appName = "mgmiddemo$(RANDOM(100))"
+$location = "australiaeast"
+$containerName = "comments"
+
+az group create --location $location --name $rgName
+
+az storage account create `
+  --name $storageName -g $rgName `
+  --access-tier Hot --kind StorageV2 `
+  --sku Standard_LRS
+
+az storage container create --account-name $storageName --name $containerName
+
+az appservice plan create --name $appPlanName `
+  --sku S1 `
+  --location $location `
+  -g $rgName
+
+az webapp create --name $appName -g $rgName --plan $appPlanName `
+ --% --runtime "DOTNETCORE|3.1" --assign-identity
+
+$mgmId=$(az resource list -n $appName --query [*].identity.principalId --out tsv)
+$sub=$(az account subscription list --query "[?contains(displayName, 'Yas')].subscriptionId" -o tsv )
+
+az ad sp create --id $mgmId
+
+az role assignment create --assignee $mgmId `
+  --role 'Storage Blob Data Contributor' `
+  --scope "/subscriptions/$sub/resourceGroups/$rgName/providers/Microsoft.Storage/storageAccounts/$storageName"
+
+dotnet publish -o ./out
+
+Compress-Archive -Path ./out/* web.zip
+
+az webapp deploy -g $rgName -n $appName --src-path web.zip
+
+az webapp config appsettings set -g $rgName -n $appName --settings AccountName=$storageName
+
+$webAppUrl = "https://$(az webapp show -g $rgName -n $appName --query defaultHostName -o tsv)/signin-oidc"

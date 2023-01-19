@@ -1,33 +1,39 @@
 # create resource group
-az group create --name demoAZ204-3 --location eastus2
+$rgName = "AZ204"
+$location = "eastus"
+$cdnSAName = "az204cdndemo23"
+
+az group create --name $rgName --location $location
 
 #create account 
-az storage account create --name cdntestalexdemo --resource-group demoAZ204-3 --location koreasouth
+az storage account create --name $cdnSAName --resource-group $rgName --location koreasouth
 
 #create container
-az storage container create --name demoimg --public-access container --account-name cdntestalexdemo
+az storage container create --name demoimg --public-access container --account-name $cdnSAName
 
 #get key
-$key=(az storage account keys list  --account-name cdntestalexdemo --query "[0].{Name:value}" -o tsv)
-
+$key=(az storage account keys list  --account-name $cdnSAName --query "[0].{Name:value}" -o tsv)
+#$key="4iKroDFGx8xTENhGvf85IzeHQH5q1uPTGhUzJ32Pazs40PNF7WJ5zMwQM8nkIzzByPPSxOT1WAJD+AStoemCgg=="
 #upload file
-az storage blob upload --name img.jpg -f img.jpg -c demoimg --account-name cdntestalexdemo --account-key $key
+az storage blob upload --name img.jpg -f img.jpg -c demoimg --account-name $cdnSAName --account-key $key
 
 # create new CDN account
-az cdn profile create --name DemoProfile --resource-group demoAZ204-3 --sku Standard_Akamai
+az cdn profile create --name $cdnSAName --resource-group $rgName --sku Standard_Microsoft
 
 # Create Endpoint for 
-az cdn endpoint create --name alex-cdn-img --origin cdntestalexdemo.blob.core.windows.net --origin-host-header cdntestalexdemo.blob.core.windows.net --origin-path /demoimg --profile-name DemoProfile --resource-group demoAZ204-3 
+az cdn endpoint create --name mystg --origin "$cdnSAName.blob.core.windows.net" --origin-host-header "$cdnSAName.blob.core.windows.net" --origin-path /demoimg --profile-name $cdnSAName  --resource-group $rgName 
 
 #push loading (ONLY for Premium)
-az cdn endpoint load --content-paths '/demoimg/img.jpg' --name alex-cdn-img --profile-name DemoProfile --resource-group demoAZ204-3
+az cdn endpoint load --content-paths '/demoimg/img.jpg' --name mystg --profile-name $cdnSAName --resource-group $rgName
+
+az cdn endpoint purge --content-paths '/demoimg/img.jpg' --name mystg --profile-name $cdnSAName --resource-group $rgName
 
 #load file directly from org
-cmd /c curl "https://cdntestalexdemo.blob.core.windows.net/demoimg/img.jpg" -o c:\temp\tes.jpg
+cmd /c curl "https://$cdnSAName.blob.core.windows.net/demoimg/img.jpg" -o ./img.jpg
 
 #wait until indexing of file
 
 #load file from CDN
-cmd /c curl "https://alex-cdn-img.azureedge.net/img.jpg"  -o c:\temp\tes.jpg
+cmd /c curl "https://mystg.azureedge.net/img.jpg"  -o ./img.jpg
 
 

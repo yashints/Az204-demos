@@ -1,0 +1,15 @@
+docker build -t myfirstimage .
+
+docker image ls
+# run image locally
+docker run -p 8080:80 -d myfirstimage
+
+$acrName = "acr$(Get-Random -Maximum 1000)"
+
+az acr create -n $acrName -g Demo --sku Standard
+
+az acr build -t myrepo/myfirstimage -r $acrName .
+
+docker build
+docker tag
+docker push

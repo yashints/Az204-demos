@@ -11,7 +11,7 @@ const client = EventHubClient.createFromConnectionString(
     process.env.connectionString, process.env.eventHubsName);
 
 async function main() {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 100; i++) {
         const eventData = { body: `Event ${ i }` };
         console.log(`Sending event: ${ eventData.body }`);
         await client.send(eventData);
