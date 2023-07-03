@@ -19,7 +19,7 @@ $pass=(az acr credential show --name $acrName --query "passwords[0].value")
 
 # Deploy container image
 az container create --resource-group $acrRgName `
- --name acr-ninjacat-node --image "$acrName.azurecr.io/ninjacat-nodejs:latest" `
+ --name acr-ninjacat-node --image "$acrName.azurecr.io/ninjacat:latest" `
  --cpu 1 --memory 1 --registry-username $acrName `
  --registry-password $pass  --dns-name-label acininjacat `
  --ports 80

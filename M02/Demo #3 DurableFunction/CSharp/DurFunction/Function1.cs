@@ -31,7 +31,7 @@ namespace DurFunction
     public static string SayHello([ActivityTrigger] string name, ILogger log)
     {
       log.LogInformation($"Saying hello to {name}");
-      Thread.Sleep(10000);
+      Thread.Sleep(5000);
       return $"Hello from {name}!";
     }
 

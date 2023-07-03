@@ -25,7 +25,6 @@ namespace Src
           {
             var settings = config
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: true)
             .AddCommandLine(args)
             .Build();
             config.AddAzureAppConfiguration(options =>

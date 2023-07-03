@@ -1,16 +1,12 @@
 var http = require("http");
-const dotenv = require("dotenv");
+const dotenv = require("dotenv-flow");
 const path = require("path");
 
-const {
-  DefaultAzureCredential,
-  ManagedIdentityCredential,
-} = require("@azure/identity");
+const { DefaultAzureCredential, ManagedIdentityCredential } = require("@azure/identity");
 const { SecretClient } = require("@azure/keyvault-secrets");
 
 // Import required configuration.
-const ENV_FILE = path.join(__dirname, `.env.${process.env.NODE_ENV}`);
-dotenv.config({ path: ENV_FILE });
+dotenv.config();
 
 // // DefaultAzureCredential expects the following three environment variables:
 // // - AZURE_TENANT_ID: The tenant ID in Azure Active Directory
@@ -23,6 +19,7 @@ const credential = new DefaultAzureCredential();
 
 // Replace value with your Key Vault name here
 const vaultName = process.env.KeyVaultName;
+console.log(process.env.KeyVaultName);
 const url = `https://${vaultName}.vault.azure.net`;
 
 const client = new SecretClient(url, credential);

@@ -1,1 +1,1 @@
-cmd /c "C:\Program Files\Redis\redis-cli.exe" -h az204acfrdemo.redis.cache.windows.net -p 6379 -a TK3rI6L0SzsSMGxbqJiOb1o7WaOOumQMlAzCaGgFbLo=
+cmd /c "C:\Program Files\Redis\redis-cli.exe" -h az204rdcdemo.redis.cache.windows.net -p 6379 -a t47tzO5tlcbfDA9R3DTcGv6bBSBEH6irSAzCaHzIPbs=

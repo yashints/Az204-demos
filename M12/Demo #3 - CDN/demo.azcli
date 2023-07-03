@@ -1,6 +1,6 @@
 # create resource group
 $rgName = "AZ204"
-$location = "eastus"
+$location = "australiaeast"
 $cdnSAName = "az204cdndemo23"
 
 az group create --name $rgName --location $location
@@ -8,14 +8,15 @@ az group create --name $rgName --location $location
 #create account 
 az storage account create --name $cdnSAName --resource-group $rgName --location koreasouth
 
-#create container
-az storage container create --name demoimg --public-access container --account-name $cdnSAName
-
 #get key
 $key=(az storage account keys list  --account-name $cdnSAName --query "[0].{Name:value}" -o tsv)
-#$key="4iKroDFGx8xTENhGvf85IzeHQH5q1uPTGhUzJ32Pazs40PNF7WJ5zMwQM8nkIzzByPPSxOT1WAJD+AStoemCgg=="
+
+#create container
+az storage container create --name demoimg --public-access container --account-name $cdnSAName --account-key $key
+
+#$key="D60lcuG2qifWyVUQO1YrZeYD5zP6xnRs5KsvoFJtUiIadjdDbPdb8c6E9nZgYkP7GOW7AfwoURm8+ASt9HJETA=="
 #upload file
-az storage blob upload --name img.jpg -f img.jpg -c demoimg --account-name $cdnSAName --account-key $key
+az storage blob upload --name img.jpg -f img.jpg -c demoimg --overwrite --account-name $cdnSAName --account-key $key
 
 # create new CDN account
 az cdn profile create --name $cdnSAName --resource-group $rgName --sku Standard_Microsoft
@@ -29,11 +30,11 @@ az cdn endpoint load --content-paths '/demoimg/img.jpg' --name mystg --profile-n
 az cdn endpoint purge --content-paths '/demoimg/img.jpg' --name mystg --profile-name $cdnSAName --resource-group $rgName
 
 #load file directly from org
-cmd /c curl "https://$cdnSAName.blob.core.windows.net/demoimg/img.jpg" -o ./img.jpg
+cmd /c curl "https://$cdnSAName.blob.core.windows.net/demoimg/img.jpg" -o ./img1.jpg
 
 #wait until indexing of file
 
 #load file from CDN
-cmd /c curl "https://mystg.azureedge.net/img.jpg"  -o ./img.jpg
+cmd /c curl "https://mystg.azureedge.net/img.jpg"  -o ./img2.jpg
 
 

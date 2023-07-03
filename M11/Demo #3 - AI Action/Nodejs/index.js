@@ -1,4 +1,4 @@
-var apikey = "8ff1ab6e-da66-4934-8627-a42c32998e87";
+var apikey = "963d38f3-6b48-4159-8a63-7f833040a781";
 var appInsights = require("applicationinsights");
 // contosoadsweb
 appInsights.setup(apikey).setInternalLogging(true, true).start();

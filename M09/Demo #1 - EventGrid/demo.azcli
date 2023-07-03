@@ -1,10 +1,10 @@
 
-$groupname= "EventGridSubscriptionDemo"  #monitoring Group
+$groupname= "EventGridDemo"  #monitoring Group
 $subid= "349202f9-9921-4db9-97d0-2c764fec3bcd"   
-$storaccountname = "az204egsubdemo"  #queue acc
+$storaccountname = "az204stgdemo"  #queue acc
 $queuename = "event-test"               #queue name
-$rgName = "EventGridSubDemo"
-$location = "eastus"
+$rgName = "AZ204"
+$location = "australiaeast"
 
 # creates a resource group named gridResourceGroup in the westus2 location
 az group create --name $rgName --location $location
@@ -23,15 +23,16 @@ az provider show --namespace Microsoft.EventGrid --query "registrationState"
 az storage account create -n $storaccountname -g $rgName -l $location --sku Standard_LRS
 
 # create queue
+$key=(az storage account keys list  --account-name $storaccountname --query "[0].{Name:value}" -o tsv)
 
-az storage queue create --name $queuename --account-name $storaccountname
+az storage queue create --name $queuename --account-name $storaccountname --account-key $key
 
 # create custom subscription
 az eventgrid event-subscription create `
   --name demoViewerSub `
   --source-resource-id "/subscriptions/$subid/resourceGroups/$groupname" `
   --endpoint-type storagequeue `
-  --endpoint "/subscriptions/$subid/resourceGroups/$rgName/providers/Microsoft.Storage/storageAccounts/$storaccountname/queueServices/default/queues/$queuename"
+  --endpoint "/subscriptions/349202f9-9921-4db9-97d0-2c764fec3bcd/resourceGroups/$rgName/providers/Microsoft.Storage/storageAccounts/$storaccountname/queueServices/default/queues/$queuename"
 
 #show existed subscription
 az eventgrid event-subscription list --source-resource-id "/subscriptions/$subid/resourceGroups/$groupname" -o table

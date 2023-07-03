@@ -1,7 +1,7 @@
 #Create resource group
 #$acrName = "acr$(Random(1000))"
 $acrName = "az204acrdemo"
-$location = 'eastus'
+$location = 'australiaeast'
 $rgName = 'AZ204'
 
 az group create --name $rgName --location $location

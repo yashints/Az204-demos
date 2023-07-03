@@ -1,0 +1,3 @@
+$functionAppName="imageresizedemo"
+
+func azure functionapp publish $functionAppName

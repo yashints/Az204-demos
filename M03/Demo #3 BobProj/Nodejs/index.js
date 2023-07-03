@@ -15,32 +15,21 @@ async function main() {
   );
 
   // Create a unique name for the container.
-  const containerName = "demo";
+  const containerName = "pdf";
 
   // Get a reference to a container
-  const containerClient = await blobServiceClient.getContainerClient(
-    containerName
-  );
+  const containerClient = await blobServiceClient.getContainerClient(containerName);
 
   // Create the container
   const createContainerResponse = await containerClient.createIfNotExists();
-  console.log(
-    `Create container ${containerName} successfully`,
-    createContainerResponse.requestId
-  );
+  console.log(`Create container ${containerName} successfully`, createContainerResponse.requestId);
 
   // Create a blob
   const content = "hello world 3";
   const blobName = "newblob" + new Date().getTime();
   const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-  const uploadBlobResponse = await blockBlobClient.upload(
-    content,
-    Buffer.byteLength(content)
-  );
-  console.log(
-    `Upload block blob ${blobName} successfully`,
-    uploadBlobResponse.requestId
-  );
+  const uploadBlobResponse = await blockBlobClient.upload(content, Buffer.byteLength(content));
+  console.log(`Upload block blob ${blobName} successfully`, uploadBlobResponse.requestId);
 
   // set blob metadata
   const metadata = {
@@ -57,9 +46,7 @@ async function main() {
 
   // Get blob content from position 0 to the end
   const downloadBlockBlobResponse = await blockBlobClient.download(0);
-  const filecontent = await streamToString(
-    downloadBlockBlobResponse.readableStreamBody
-  );
+  const filecontent = await streamToString(downloadBlockBlobResponse.readableStreamBody);
   console.log(`Downloaded blob content: '${filecontent}'`);
 
   // Delete container

@@ -12,7 +12,7 @@ namespace KeyVaultReader
     {
       var configuration = new ConfigurationBuilder()
       .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
-      .AddJsonFile("appsettings.json", false)
+      .AddJsonFile("appsettings.Development.json", false)
       .Build();
 
       //build credential
@@ -35,7 +35,7 @@ namespace KeyVaultReader
           configuration.GetSection("AZURE_CLIENT_SECRET").Value,
           options);
 
-      var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
+      var client = new SecretClient(new Uri(kvUri), clientSecretCredential);
 
       //retrieve the secret
       KeyVaultSecret secret = client.GetSecret(configuration.GetSection("secretName").Value);

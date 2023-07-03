@@ -19,11 +19,9 @@ async function init(client, databaseId, containerId, partitionKey) {
 
   console.log(`Created db: ${databaseId}\n`);
 
-  const { container } = await client
-    .database(databaseId)
-    .containers.createIfNotExists(
-      { id: containerId, partitionKey } //,{ offerThroughput: 400 }
-    );
+  const { container } = await client.database(databaseId).containers.createIfNotExists(
+    { id: containerId, partitionKey } //,{ offerThroughput: 400 }
+  );
 
   console.log(`Created container: ${container.id}\n`);
 
@@ -41,9 +39,7 @@ async function createItem(container) {
 
   const { resource: createdItem } = await container.items.create(newItem);
 
-  console.log(
-    `Created new item: ${createdItem.id} - ${createdItem.description}\r\n`
-  );
+  console.log(`Created new item: ${createdItem.id} - ${createdItem.description}\r\n`);
 
   return container;
 }
@@ -57,9 +53,7 @@ async function queryItems(container) {
   };
 
   // read all items in the Items container
-  const { resources: items } = await container.items
-    .query(querySpec)
-    .fetchAll();
+  const { resources: items } = await container.items.query(querySpec).fetchAll();
 
   items.forEach((item) => {
     console.log(`${item.id} - ${item.description}`);
@@ -74,11 +68,9 @@ async function updateItem(container, item) {
   item.isComplete = true;
 
   try {
-    var { resource: updatedItem } = await container
-      .item(item.id)
-      .replace(item, {
-        accessCondition: { type: "IfMatch", condition: item._etag },
-      });
+    var { resource: updatedItem } = await container.item(item.id).replace(item, {
+      accessCondition: { type: "IfMatch", condition: item._etag },
+    });
 
     console.log(`Updated item: ${updatedItem.id} - ${updatedItem.description}`);
     console.log(`Updated isComplete to ${updatedItem.isComplete}\r\n`);
@@ -95,12 +87,7 @@ async function cleanup(container, databaseId) {
   console.log("The database is deleted");
 }
 
-init(
-  client,
-  process.env.databaseId,
-  process.env.containerId,
-  process.env.partitionKey
-)
+init(client, process.env.databaseId, process.env.containerId, process.env.partitionKey)
   .then((container) => createItem(container))
   .then((container) => createItem(container))
   .then((container) => createItem(container))

@@ -80,15 +80,13 @@ async function main() {
   // });
 
   // take first message from queue without deleting
-  await queueClient.peekMessages(
-    "demo-queue",
-    function (error, results, response) {
-      console.log(results);
-      if (results && results.length > 0) {
-        console.log(`first message peeked: ${results[0].messageText}`);
-      }
+  console.log("calling peak");
+  await queueClient.peekMessages("demo-queue", function (error, results, response) {
+    console.log(results);
+    if (results && results.length > 0) {
+      console.log(`first message peeked: ${results[0].messageText}`);
     }
-  );
+  });
 
   // check message queue length
   // await queueClient.getQueueMetadata("demo-queue", function (error, mdata) {

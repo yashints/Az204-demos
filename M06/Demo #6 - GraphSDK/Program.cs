@@ -10,7 +10,8 @@ namespace GraphClient
   {
     static async Task Main(string[] args)
     {
-      AuthenticationConfig config = AuthenticationConfig.ReadFromJsonFile("appsettings.json");
+      AuthenticationConfig config = AuthenticationConfig
+        .ReadFromJsonFile("appsettings.Development.json");
 
       var graphScopes = new string[] { $"{config.ApiUrl}.default" };
 
